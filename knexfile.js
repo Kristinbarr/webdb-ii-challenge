@@ -5,7 +5,7 @@ module.exports = {
     // client -> db driver
     client: 'sqlite3',
     connection: {
-      filename: './data/cars.db3' // update
+      filename: './data/car-dealer.db3' // update
     }, // add below properties
     useNullAsDefault: true,
     migrations: {
