@@ -9,17 +9,15 @@ const server = express()
 server.use(helmet())
 server.use(express.json())
 
-server.get('/', async (req, res) => {})
+server.get('/', async (req, res) => {
+  res.send(`<h2>CARS API IS WORKING</h2>`)
+})
 
 server.use('/api/cars', carsRouter)
-server.use('/api/sales', salesRouter)
+// server.use('/api/sales', salesRouter)
 
 /**
  * Helpers
  */
-
-function withCatch(promise) {
-  return promise.then((data) => [null, data]).catch((err) => [err])
-}
 
 module.exports = server
