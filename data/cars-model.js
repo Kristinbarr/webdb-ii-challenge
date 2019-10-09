@@ -10,7 +10,7 @@ module.exports = {
 }
 
 function get(id) {
-  return id ? db('cars').where({ id: Number(id) }) : db('cars')
+  return id ? db('cars').where({ id: Number(id) }).first() : db('cars')
 }
 
 function insert(body) {
