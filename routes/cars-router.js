@@ -1,57 +1,68 @@
 const express = require('express')
 const router = express()
-const carsModel = require('../data/carsModel')
-const withCatch = require('../utils')
+const carModel = require('../data/cars-model')
 
 router.get('/', async (req, res) => {
-  const [err, cars] = await withCatch(carsModel.get())
-  if (err) res.status(500).json({ error: err })
-  else if (!cars.length) res.status(404).json({ error: 'No cars found.' })
-  else res.status(200).json(cars)
+  try {
+    const cars = await carModel.get()
+    if (!cars.length) res.status(404).json({ error: 'Error retrieving cars' })
+    else res.status(200).json(cars)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'Error retrieving cars' })
+  }
 })
 
 router.get('/:id', async (req, res) => {
-  const [err, car] = await withCatch(carsModel.get(req.params.id))
-  if (err) res.status(500).json({ error: err })
-  else if (!cars.length) res.status(404).json({ error: 'No cars found.' })
-  else res.status(200).json(car)
+  try {
+    const [car] = await carModel.get(req.params.id)
+    if (JSON.stringify(car) === '{}')
+      res.status(404).json({ error: 'Error retrieving car' })
+    else res.status(200).json(car)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'Error retrieving car' })
+  }
 })
 
 router.post('/', async (req, res) => {
-  const [err, car] = await withCatch(carsModel.insert(req.body))
-
-  if (err) res.status(500).json({ error: err })
-  else if (!car.length) res.status(404).json({ error: 'problem adding car' })
-  else res.status(200).json(car)
+  try {
+    const car = await carModel.insert(req.body)
+    console.log(car)
+    if (JSON.stringify(car) === '{}')
+      res.status(404).json({ error: 'Error with submitted car' })
+    else res.status(200).json(car)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'Error adding car' })
+  }
 })
 
 router.put('/:id', async (req, res) => {
-  const [err, count] = await withCatch(
-    CarsModel.update(req.params.id, req.body)
-  )
-  const [err2, beforeUpdate] = await withCatch(carsModel.get(req.params.id))
-  if (err || err2) res.status(500).json({ error: err })
-  else if (!count)
-    res.status(500).json({
-      error:
-        'There was a problem updating the car with the id of ' + req.params.id
-    })
-  else
+  try {
+    const [carBefore] = await carModel.get(req.params.id)
+    const count = await carModel.update(req.params.id, req.body)
+    if (!count) res.status(404).json({ error: 'Error with submitted car' })
     res.status(200).json({
-      success: 'Successfully updatd the car with the id of ' + id,
-      before: beforeUpdate,
+      message: 'Update successful',
+      before: carBefore,
       after: req.body
     })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'Error updating car' })
+  }
 })
 
 router.delete('/:id', async (req, res) => {
-  const [err, count] = await withCatch(carsModel.remove(req.params.id))
-
-  if (err) res.status(500).json({ error: err })
-  else
-    res.status(500).json({
-      deleted: `${count} cars from system with the id of ${req.params.id}`
-    })
+  try {
+    const count = await carModel.remove(req.params.id)
+    if (!count) res.status(404).json({ message: `Error with submitted car id` })
+    res.status(200).json({ message: `deleted car with id: ${req.params.id}` })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'Error deleting car' })
+  }
 })
 
 module.exports = router

@@ -10,14 +10,12 @@ server.use(helmet())
 server.use(express.json())
 
 server.get('/', async (req, res) => {
-  res.send(`<h2>CARS API IS WORKING</h2>`)
+  res.send(`<h2>Cars API is working</h2>`)
 })
 
 server.use('/api/cars', carsRouter)
 // server.use('/api/sales', salesRouter)
 
-/**
- * Helpers
- */
+/* Helpers */
 
 module.exports = server
