@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    const [car] = await carModel.get(req.params.id)
+    const car = await carModel.get(req.params.id)
     if (JSON.stringify(car) === '{}')
       res.status(404).json({ error: 'Error retrieving car' })
     else res.status(200).json(car)
@@ -28,7 +28,6 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const car = await carModel.insert(req.body)
-    console.log(car)
     if (JSON.stringify(car) === '{}')
       res.status(404).json({ error: 'Error with submitted car' })
     else res.status(200).json(car)
@@ -40,7 +39,7 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   try {
-    const [carBefore] = await carModel.get(req.params.id)
+    const carBefore = await carModel.get(req.params.id)
     const count = await carModel.update(req.params.id, req.body)
     if (!count) res.status(404).json({ error: 'Error with submitted car' })
     res.status(200).json({
